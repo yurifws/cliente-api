@@ -44,15 +44,16 @@ public class EstadoController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Estado buscar(@RequestBody @Valid EstadoInput estadoInput){
-		return estadoService.salvar(estadoAssembler.toDomainObject(estadoInput));
+	public EstadoModel buscar(@RequestBody @Valid EstadoInput estadoInput){
+		Estado estado = estadoAssembler.toDomainObject(estadoInput);
+		return estadoAssembler.toModel(estadoService.salvar(estado));
 	}
 	
 	@PutMapping("/{id}")
-	public Estado buscar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput){
+	public EstadoModel buscar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput){
 		Estado estadoAtual = estadoService.buscar(id);
 		estadoAssembler.copyToDomainObject(estadoInput, estadoAtual);
-		return estadoService.salvar(estadoAtual);
+		return estadoAssembler.toModel(estadoService.salvar(estadoAtual));
 	}
 	
 	@DeleteMapping("/{id}")
