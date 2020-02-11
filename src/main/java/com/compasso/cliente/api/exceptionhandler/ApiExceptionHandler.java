@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.compasso.cliente.domain.exception.EntidadeNaoEncontradaException;
@@ -29,6 +30,29 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			"Ocorreu um erro interno inesperado no sistema. Tente novamente e se "
 			+ "o problema persistir, entre em contato com o administrador do sistema.";
 	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<?> handleUncaught(Exception ex,
+			WebRequest request) {
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+		ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
+		String detail = MSG_ERRO_GENERICA_USUARIO_FINAL;
+		
+		ex.printStackTrace();
+		
+		Problem problem = createProblemBuilder(status, problemType, detail, detail).build();
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+	
+	@Override
+	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
+			HttpStatus status, WebRequest request) {
+		ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
+		String detail = String.format(
+				"O recurso '%s', que você tentou acessar, é inexistente", ex.getRequestURL());
+		
+		Problem problem = createProblemBuilder(status, problemType, detail, MSG_ERRO_GENERICA_USUARIO_FINAL).build();
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
 	
 	@Override
 	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
