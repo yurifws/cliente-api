@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.compasso.cliente.api.model.CidadeModel;
 import com.compasso.cliente.api.model.input.CidadeInput;
 import com.compasso.cliente.domain.model.Cidade;
+import com.compasso.cliente.domain.model.Estado;
 
 @Component
 public class CidadeAssembler {
@@ -32,6 +33,7 @@ public class CidadeAssembler {
 	}
 	
 	public void copyToDomainObject(CidadeInput cidadeInput, Cidade cidade) {	
+		cidade.setEstado(new Estado());
 		modelMapper.map(cidadeInput, cidade);
 	}
 	

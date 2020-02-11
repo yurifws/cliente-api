@@ -9,7 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.compasso.cliente.domain.exception.CidadeNaoEncontradoException;
 import com.compasso.cliente.domain.exception.EntidadeEmUsoException;
+import com.compasso.cliente.domain.exception.EntidadeNaoEncontradaException;
+import com.compasso.cliente.domain.exception.NegocioException;
 import com.compasso.cliente.domain.model.Cidade;
+import com.compasso.cliente.domain.model.Estado;
 import com.compasso.cliente.domain.repository.CidadeRepository;
 
 @Service
@@ -19,6 +22,10 @@ public class CidadeService {
 	
 	@Autowired
 	private CidadeRepository cidadeRepository;
+	
+	
+	@Autowired
+	private EstadoService estadoService;
 	
 	public List<Cidade> listar(){
 		return cidadeRepository.findAll();
@@ -30,7 +37,14 @@ public class CidadeService {
 	
 	@Transactional
 	public Cidade salvar(Cidade cidade) {
-		return cidadeRepository.save(cidade);
+		try {
+			Long estadoId = cidade.getEstado().getId();
+			Estado estado = estadoService.buscar(estadoId);
+			cidade.setEstado(estado);
+			return cidadeRepository.save(cidade);
+		} catch (EntidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
 	}
 	
 	@Transactional
