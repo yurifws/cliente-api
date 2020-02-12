@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,10 +16,9 @@ public class ClienteInput {
 	@NotBlank
 	private String nome;
 	
-	@NotBlank
-	private char sexo;
+	@NotNull
+	private Character sexo;
 	
-	@Pattern(regexp = "yyyy-MM-dd")
 	private LocalDate dataNascimento;
 	
 	private int idade;
