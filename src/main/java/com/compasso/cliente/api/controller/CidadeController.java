@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,6 +41,16 @@ public class CidadeController {
 	@GetMapping("/{id}")
 	public CidadeModel buscar(@PathVariable Long id){
 		return cidadeAssembler.toModel(cidadeService.buscar(id));
+	}
+	
+	@GetMapping("/por-nome")
+	public List<CidadeModel> buscarPorNome(@RequestParam String nome){
+		return cidadeAssembler.toCollectionModel(cidadeService.buscarPorNome(nome));
+	}
+	
+	@GetMapping("/por-estado")
+	public List<CidadeModel> buscarPorEstadoNome(@RequestParam String nome){
+		return cidadeAssembler.toCollectionModel(cidadeService.buscarPorEstadoNome(nome));
 	}
 	
 	@PostMapping

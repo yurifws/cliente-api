@@ -35,6 +35,14 @@ public class CidadeService {
 		return cidadeRepository.findById(id).orElseThrow(() -> new CidadeNaoEncontradoException(id));
 	}
 	
+	public List<Cidade> buscarPorNome(String nome){
+		return cidadeRepository.findByNomeContaining(nome);
+	}
+	
+	public List<Cidade> buscarPorEstadoNome(String nome){
+		return cidadeRepository.findByEstadoNomeContaining(nome);
+	}
+	
 	@Transactional
 	public Cidade salvar(Cidade cidade) {
 		try {
