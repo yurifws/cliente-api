@@ -15,7 +15,7 @@ public class ClienteInput {
 
 	@NotBlank
 	private String nome;
-
+	
 	@NotBlank
 	private String sexo;
 
