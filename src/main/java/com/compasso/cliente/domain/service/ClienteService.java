@@ -40,6 +40,7 @@ public class ClienteService {
 			Long cidadeId = cliente.getCidade().getId();
 			Cidade cidade = cidadeService.buscar(cidadeId);
 			cliente.setCidade(cidade);
+			cliente.obterIdade();
 			return clienteRepository.save(cliente);
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);

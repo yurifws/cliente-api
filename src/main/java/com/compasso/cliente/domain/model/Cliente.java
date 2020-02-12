@@ -2,6 +2,7 @@ package com.compasso.cliente.domain.model;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.Period;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,5 +53,12 @@ public class Cliente {
 	@UpdateTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataAtualizacao = OffsetDateTime.now();
+	
+	public void obterIdade() {
+		if(idade == 0) {
+			LocalDate hoje = LocalDate.now();
+			idade = Period.between(dataNascimento, hoje).getYears();
+		}
+	}
 	
 }
