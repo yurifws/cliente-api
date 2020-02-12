@@ -33,7 +33,7 @@ public class Cliente {
 	private String nome;
 	
 	@Column(nullable = false)
-	private String sexo;
+	private char sexo;
 	
 	@Column(nullable = false)
 	private LocalDate dataNascimento;
@@ -47,10 +47,10 @@ public class Cliente {
 	
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
-	private OffsetDateTime dataCadastro;
+	private OffsetDateTime dataCadastro = OffsetDateTime.now();
 	
 	@UpdateTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
-	private OffsetDateTime dataAtualizacao;
+	private OffsetDateTime dataAtualizacao = OffsetDateTime.now();
 	
 }
