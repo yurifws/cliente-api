@@ -9,6 +9,6 @@ public class ClienteModel {
 	
 	private Long id;
 	private String nome;
-	private EstadoModel estado;
+	private CidadeModel cidade;
 
 }
