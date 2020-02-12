@@ -1,6 +1,7 @@
 package com.compasso.cliente.api.exceptionhandler;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -119,6 +120,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		Throwable rootCause = ExceptionUtils.getRootCause(ex);
+		
+		if(rootCause instanceof DateTimeParseException && 
+				ex.getCause() instanceof InvalidFormatException) {
+			rootCause = ex.getCause();
+		}
 
 		if (rootCause instanceof InvalidFormatException) {
 			return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
@@ -126,7 +132,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		if (rootCause instanceof PropertyBindingException) {
 			return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
 		}
-
+		
 		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
 		String detail = "O corpo da requisição está inválida. Verifique erro de sintaxe.";
 
@@ -134,6 +140,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
+	private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex, HttpHeaders headers,
+			HttpStatus status, WebRequest request) {
+		String path = joinPath(ex.getPath());
+		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+		String detail = String.format(
+				"A propriedade '%s' não existe."
+				+ " Corrija ou remova essa propriedade e tente novamente.", path);
+		
+		Problem problem = createProblemBuilder(status, problemType, detail, MSG_ERRO_GENERICA_USUARIO_FINAL).build();
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
+	
 	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
 		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
@@ -142,18 +160,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				"A propriedade '%s' recebeu o valor '%s' que é de um tipo inválido. "
 				+ "Corrija e informe um valor compatível com o tipo %s.",
 				path, ex.getValue(), ex.getTargetType().getSimpleName());
-		
-		Problem problem = createProblemBuilder(status, problemType, detail, MSG_ERRO_GENERICA_USUARIO_FINAL).build();
-		return handleExceptionInternal(ex, problem, headers, status, request);
-	}
-	
-	private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex, HttpHeaders headers,
-			HttpStatus status, WebRequest request) {
-		String path = joinPath(ex.getPath());
-		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
-		String detail = String.format(
-				"A propriedade '%s' não existe."
-				+ " Corrija ou remova essa propriedade e tente novamente.", path);
 		
 		Problem problem = createProblemBuilder(status, problemType, detail, MSG_ERRO_GENERICA_USUARIO_FINAL).build();
 		return handleExceptionInternal(ex, problem, headers, status, request);

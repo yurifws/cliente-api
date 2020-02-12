@@ -18,7 +18,7 @@ public class ClienteInput {
 	
 	@NotBlank
 	private String sexo;
-
+	
 	private LocalDate dataNascimento;
 
 	private int idade;
