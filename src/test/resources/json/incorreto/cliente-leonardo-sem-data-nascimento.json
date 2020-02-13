@@ -1,0 +1,8 @@
+{
+    "nome": "Leonardo Wanderley",
+    "sexo": "M",
+    "idade": 23,
+    "cidade": {
+        "id": 1
+    }
+}
