@@ -23,6 +23,9 @@ import com.compasso.cliente.api.model.input.CidadeInput;
 import com.compasso.cliente.domain.model.Cidade;
 import com.compasso.cliente.domain.service.CidadeService;
 
+import io.swagger.annotations.Api;
+
+@Api(tags = "Cidades")
 @RestController
 @RequestMapping("/cidades")
 public class CidadeController {
@@ -55,13 +58,13 @@ public class CidadeController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeModel buscar(@RequestBody @Valid CidadeInput cidadeInput){
+	public CidadeModel salvar(@RequestBody @Valid CidadeInput cidadeInput){
 		Cidade cidade = cidadeAssembler.toDomainObject(cidadeInput);
 		return cidadeAssembler.toModel(cidadeService.salvar(cidade));
 	}
 	
 	@PutMapping("/{id}")
-	public CidadeModel buscar(@PathVariable Long id, @RequestBody @Valid CidadeInput cidadeInput){
+	public CidadeModel atualizar(@PathVariable Long id, @RequestBody @Valid CidadeInput cidadeInput){
 		Cidade cidadeAtual = cidadeService.buscar(id);
 		cidadeAssembler.copyToDomainObject(cidadeInput, cidadeAtual);
 		return cidadeAssembler.toModel(cidadeService.salvar(cidadeAtual));

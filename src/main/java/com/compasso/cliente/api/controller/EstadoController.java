@@ -22,6 +22,9 @@ import com.compasso.cliente.api.model.input.EstadoInput;
 import com.compasso.cliente.domain.model.Estado;
 import com.compasso.cliente.domain.service.EstadoService;
 
+import io.swagger.annotations.Api;
+
+@Api(tags = "Estados")
 @RestController
 @RequestMapping("/estados")
 public class EstadoController {
@@ -44,13 +47,13 @@ public class EstadoController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public EstadoModel buscar(@RequestBody @Valid EstadoInput estadoInput){
+	public EstadoModel salvar(@RequestBody @Valid EstadoInput estadoInput){
 		Estado estado = estadoAssembler.toDomainObject(estadoInput);
 		return estadoAssembler.toModel(estadoService.salvar(estado));
 	}
 	
 	@PutMapping("/{id}")
-	public EstadoModel buscar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput){
+	public EstadoModel atualizar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput){
 		Estado estadoAtual = estadoService.buscar(id);
 		estadoAssembler.copyToDomainObject(estadoInput, estadoAtual);
 		return estadoAssembler.toModel(estadoService.salvar(estadoAtual));
