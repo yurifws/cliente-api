@@ -77,7 +77,7 @@ public class EstadoServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarStatus201_WhenCadastrarEstado() {
+	public void shouldRetornarRespostaEStatus201_WhenCadastrarEstado() {
 		given()
 			.body(jsonCorretoEstado)
 			.contentType(ContentType.JSON)
@@ -85,7 +85,8 @@ public class EstadoServiceIT {
 		.when()
 			.post()
 		.then()
-			.statusCode(HttpStatus.CREATED.value());
+			.statusCode(HttpStatus.CREATED.value())
+			.body("nome", equalTo("Pernambuco"));
 	}
 	
 	@Test

@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.basePath;
 import static io.restassured.RestAssured.enableLoggingOfRequestAndResponseIfValidationFails;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.port;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.time.LocalDate;
@@ -86,7 +87,7 @@ public class CidadeServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarStatus201_WhenCadastrarCidade() {
+	public void shouldRetornarRespostaEStatus201_WhenCadastrarCidade() {
 		given()
 			.body(jsonCorretoCidade)
 			.contentType(ContentType.JSON)
@@ -94,7 +95,10 @@ public class CidadeServiceIT {
 		.when()
 			.post()
 		.then()
-			.statusCode(HttpStatus.CREATED.value());
+			.statusCode(HttpStatus.CREATED.value())
+			.body("nome", equalTo("Recife"))
+			.body("estado.id", equalTo(1))
+			.body("estado.nome", equalTo("Pernambuco"));
 	}
 	
 	@Test
@@ -106,7 +110,34 @@ public class CidadeServiceIT {
 			.get("/{cidadeId}")
 		.then()
 			.statusCode(HttpStatus.OK.value())
-			.body("nome", equalTo(cidadeNatal.getNome()));
+			.body("nome", equalTo(cidadeNatal.getNome()))
+			.body("estado.nome", equalTo(cidadeNatal.getEstado().getNome()));
+	}
+	
+	@Test
+	public void shouldRetornarRespostaEStatusCorretos_WhenConsultarCidadePorNomeExistente() {
+		given()
+			.queryParam("nome", cidadeNatal.getNome())
+			.accept(ContentType.JSON)
+		.when()
+			.get("/por-nome")
+		.then()
+			.statusCode(HttpStatus.OK.value())
+			.body("nome", hasItem(cidadeNatal.getNome()))
+			.body("estado.nome", hasItem(cidadeNatal.getEstado().getNome()));
+	}
+	
+	@Test
+	public void shouldRetornarRespostaEStatusCorretos_WhenConsultarCidadePorEstadoNomeExistente() {
+		given()
+			.queryParam("nome", cidadeNatal.getEstado().getNome())
+			.accept(ContentType.JSON)
+		.when()
+			.get("/por-estado")
+		.then()
+			.statusCode(HttpStatus.OK.value())
+			.body("nome", hasItem(cidadeNatal.getNome()))
+			.body("estado.nome", hasItem(cidadeNatal.getEstado().getNome()));
 	}
 	
 	@Test
