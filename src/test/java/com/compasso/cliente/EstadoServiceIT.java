@@ -50,6 +50,7 @@ public class EstadoServiceIT {
 	
 	private String jsonCorretoEstado;
 	private Estado estadoSaoPaulo;
+	private Estado estadoRioJaneiro;
 	private Cidade cidadeSaoPaulo;
 
 	@Before
@@ -127,6 +128,17 @@ public class EstadoServiceIT {
 	}
 	
 	@Test
+	public void shouldRetornarStatus204_WhenDeletarEstado() {
+		given()
+			.pathParam("cidadeId", estadoRioJaneiro.getId())
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{cidadeId}")
+		.then()
+			.statusCode(HttpStatus.NO_CONTENT.value());
+	}
+	
+	@Test
 	public void shouldRetornarStatus400_WhenDeletarEstadoEmUso() {
 		given()
 			.pathParam("estadoId", estadoSaoPaulo.getId())
@@ -137,6 +149,8 @@ public class EstadoServiceIT {
 			.statusCode(HttpStatus.BAD_REQUEST.value());
 	}
 	
+	
+	
 	private void preparaDados() {
 		estadoSaoPaulo = new Estado();
 		estadoSaoPaulo.setNome("Sao Paulo");
@@ -145,6 +159,10 @@ public class EstadoServiceIT {
 		cidadeSaoPaulo.setNome("Sao Paulo");
 		cidadeSaoPaulo.setEstado(estadoSaoPaulo);
 		cidadeRepository.save(cidadeSaoPaulo);
+		
+		estadoRioJaneiro = new Estado();
+		estadoRioJaneiro.setNome("Rio de Janeiro");
+		estadoRioJaneiro = estadoRepository.save(estadoRioJaneiro);
 	}
 
 

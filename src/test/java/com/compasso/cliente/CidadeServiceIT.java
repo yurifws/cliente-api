@@ -58,7 +58,7 @@ public class CidadeServiceIT {
 	
 	private String jsonCorretoCidade;
 	private Cidade cidadeNatal;
-	private Estado estadoPernambuco;
+	private Cidade cidadeSaoMiguel;
 	
 	private Cliente cliente;
 
@@ -194,6 +194,17 @@ public class CidadeServiceIT {
 	}
 	
 	@Test
+	public void shouldRetornarStatus204_WhenDeletarCidade() {
+		given()
+			.pathParam("cidadeId", cidadeSaoMiguel.getId())
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{cidadeId}")
+		.then()
+			.statusCode(HttpStatus.NO_CONTENT.value());
+	}
+	
+	@Test
 	public void shouldRetornarStatus400_WhenDeletarCidadeEmUso() {
 		given()
 			.pathParam("cidadeId", cidadeNatal.getId())
@@ -205,7 +216,7 @@ public class CidadeServiceIT {
 	}
 	
 	private void preparaDados() {
-		estadoPernambuco = new Estado();
+		Estado estadoPernambuco = new Estado();
 		estadoPernambuco.setNome("Pernambuco");
 		estadoPernambuco = estadoRepository.save(estadoPernambuco);
 		
@@ -224,6 +235,11 @@ public class CidadeServiceIT {
 		cliente.obterIdade();
 		cliente.setCidade(cidadeNatal);
 		clienteRepository.save(cliente);
+		
+		cidadeSaoMiguel = new Cidade();
+		cidadeSaoMiguel.setNome("São Miguel");
+		cidadeSaoMiguel.setEstado(estadoRioGrandeNorte);
+		cidadeSaoMiguel = cidadeRepository.save(cidadeSaoMiguel);
 		
 	}
 

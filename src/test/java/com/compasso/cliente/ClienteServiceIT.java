@@ -162,11 +162,39 @@ public class ClienteServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarStatus400_WhenCadastrarClienteSemCidadeId() {
-		String jsonClienteSemCidadeId = ResourceUtils
-				.getContentFromResource("/json/incorreto/cliente-leonardo-sem-codigo-cidade.json");
+	public void shouldRetornarStatus400_WhenCadastrarClienteSemSexo() {
+		String jsonClienteSemCidade = ResourceUtils
+				.getContentFromResource("/json/incorreto/cliente-leonardo-sem-sexo.json");
 		given()
-			.body(jsonClienteSemCidadeId)
+			.body(jsonClienteSemCidade)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+	
+	@Test
+	public void shouldRetornarStatus400_WhenCadastrarClienteSemDataNascimento() {
+		String jsonClienteSemCidade = ResourceUtils
+				.getContentFromResource("/json/incorreto/cliente-leonardo-sem-data-nascimento.json");
+		given()
+			.body(jsonClienteSemCidade)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+	
+	@Test
+	public void shouldRetornarStatus400_WhenCadastrarClienteComDataNascimentoInvalida() {
+		String jsonClienteSemCidade = ResourceUtils
+				.getContentFromResource("/json/incorreto/cliente-leonardo-com-data-nascimento-invalida.json");
+		given()
+			.body(jsonClienteSemCidade)
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
@@ -187,6 +215,31 @@ public class ClienteServiceIT {
 			.post()
 		.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+	
+	@Test
+	public void shouldRetornarStatus400_WhenCadastrarClienteSemCidadeId() {
+		String jsonClienteSemCidadeId = ResourceUtils
+				.getContentFromResource("/json/incorreto/cliente-leonardo-sem-codigo-cidade.json");
+		given()
+			.body(jsonClienteSemCidadeId)
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+	
+	@Test
+	public void shouldRetornarStatus204_WhenDeletarCliente() {
+		given()
+			.pathParam("cidadeId", clienteJorge.getId())
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{cidadeId}")
+		.then()
+			.statusCode(HttpStatus.NO_CONTENT.value());
 	}
 	
 	private void preparaDados() {
