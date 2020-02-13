@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.compasso.cliente.api.assembler.EstadoAssembler;
+import com.compasso.cliente.api.controller.openapi.EstadoControllerOpenApi;
 import com.compasso.cliente.api.model.EstadoModel;
 import com.compasso.cliente.api.model.input.EstadoInput;
 import com.compasso.cliente.domain.model.Estado;
@@ -24,7 +25,7 @@ import com.compasso.cliente.domain.service.EstadoService;
 
 @RestController
 @RequestMapping("/estados")
-public class EstadoController {
+public class EstadoController implements EstadoControllerOpenApi{
 	
 	@Autowired
 	private EstadoService estadoService;
@@ -44,18 +45,18 @@ public class EstadoController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public EstadoModel buscar(@RequestBody @Valid EstadoInput estadoInput){
+	public EstadoModel salvar(@RequestBody @Valid EstadoInput estadoInput){
 		Estado estado = estadoAssembler.toDomainObject(estadoInput);
 		return estadoAssembler.toModel(estadoService.salvar(estado));
 	}
-	
+
 	@PutMapping("/{id}")
-	public EstadoModel buscar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput){
+	public EstadoModel atualizar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput){
 		Estado estadoAtual = estadoService.buscar(id);
 		estadoAssembler.copyToDomainObject(estadoInput, estadoAtual);
 		return estadoAssembler.toModel(estadoService.salvar(estadoAtual));
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id){
