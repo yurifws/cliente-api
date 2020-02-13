@@ -1,0 +1,9 @@
+{
+    "nome": null,
+    "sexo": "M",
+    "dataNascimento": "1994-11-15",
+    "idade": 23,
+    "cidade": {
+        "id": 1
+    }
+}
