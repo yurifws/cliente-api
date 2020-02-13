@@ -112,17 +112,6 @@ public class EstadoServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarRespostaEStatusCorretos_WhenDeletarEstadoEmUso() {
-		given()
-			.pathParam("estadoId", estadoSaoPaulo.getId())
-			.accept(ContentType.JSON)
-		.when()
-			.delete("/{estadoId}")
-		.then()
-			.statusCode(HttpStatus.BAD_REQUEST.value());
-	}
-	
-	@Test
 	public void shouldRetornarStatus400_WhenCadastrarEstadoSemNome() {
 		String jsonEstadoSemNome = ResourceUtils
 				.getContentFromResource("/json/correto/estado-sem-nome.json");
@@ -132,6 +121,17 @@ public class EstadoServiceIT {
 			.accept(ContentType.JSON)
 		.when()
 			.post()
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+	
+	@Test
+	public void shouldRetornarStatus400_WhenDeletarEstadoEmUso() {
+		given()
+			.pathParam("estadoId", estadoSaoPaulo.getId())
+			.accept(ContentType.JSON)
+		.when()
+			.delete("/{estadoId}")
 		.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value());
 	}
