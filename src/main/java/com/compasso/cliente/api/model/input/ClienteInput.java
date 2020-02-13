@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,15 +14,19 @@ import lombok.Setter;
 @Setter
 public class ClienteInput {
 
+	@ApiModelProperty(example = "João Pedro", required = true)
 	@NotBlank
 	private String nome;
 	
+	@ApiModelProperty(example = "M", required = true)
 	@NotBlank
 	private String sexo;
 	
+	@ApiModelProperty(example = "1995-12-26", required = true)
 	@NotNull
 	private LocalDate dataNascimento;
 
+	@ApiModelProperty(example = "14")
 	private int idade;
 
 	@Valid
