@@ -24,11 +24,13 @@ public interface ClienteControllerOpenApi {
 			@ApiParam(value = "Nome de um cliente", example = "1") String nome);
 	
 	@ApiOperation("Cadastra um cliente")
-	public ClienteModel salvar(ClienteInput clienteInput);
+	public ClienteModel salvar(
+			@ApiParam(name = "corpo",value = "Representação de cliente com novos dados") ClienteInput clienteInput);
 
 	@ApiOperation("Atualiza um cliente por ID")
-	public ClienteModel atualizar(Long id, ClienteInput clienteInput);
+	public ClienteModel atualizar(@ApiParam(value = "ID de um cliente", example = "1") Long id, 
+			@ApiParam(name = "corpo",value = "Representação de cliente com novos dados") ClienteInput clienteInput);
 
 	@ApiOperation("Exclui um cliente por ID")
-	public void remover(Long id);
+	public void remover(@ApiParam(value = "ID de um cliente", example = "1") Long id);
 }
