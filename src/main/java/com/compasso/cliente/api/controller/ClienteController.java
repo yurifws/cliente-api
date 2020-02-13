@@ -18,17 +18,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.compasso.cliente.api.assembler.ClienteAssembler;
+import com.compasso.cliente.api.controller.openapi.ClienteControllerOpenApi;
 import com.compasso.cliente.api.model.ClienteModel;
 import com.compasso.cliente.api.model.input.ClienteInput;
 import com.compasso.cliente.domain.model.Cliente;
 import com.compasso.cliente.domain.service.ClienteService;
 
-import io.swagger.annotations.Api;
 
-@Api(tags = "Clientes")
 @RestController
 @RequestMapping("/clientes")
-public class ClienteController {
+public class ClienteController  implements ClienteControllerOpenApi{
 	
 	@Autowired
 	private ClienteService clienteService;
@@ -57,14 +56,14 @@ public class ClienteController {
 		Cliente cliente = cienteAssembler.toDomainObject(clienteInput);
 		return cienteAssembler.toModel(clienteService.salvar(cliente));
 	}
-	
+
 	@PutMapping("/{id}")
 	public ClienteModel atualizar(@PathVariable Long id, @RequestBody @Valid ClienteInput clienteInput){
 		Cliente clienteAtual = clienteService.buscar(id);
 		cienteAssembler.copyToDomainObject(clienteInput, clienteAtual);
 		return cienteAssembler.toModel(clienteService.salvar(clienteAtual));
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long id){

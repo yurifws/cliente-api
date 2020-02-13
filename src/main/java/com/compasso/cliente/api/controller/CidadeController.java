@@ -18,17 +18,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.compasso.cliente.api.assembler.CidadeAssembler;
+import com.compasso.cliente.api.controller.openapi.CidadeControllerOpenApi;
 import com.compasso.cliente.api.model.CidadeModel;
 import com.compasso.cliente.api.model.input.CidadeInput;
 import com.compasso.cliente.domain.model.Cidade;
 import com.compasso.cliente.domain.service.CidadeService;
 
-import io.swagger.annotations.Api;
-
-@Api(tags = "Cidades")
 @RestController
 @RequestMapping("/cidades")
-public class CidadeController {
+public class CidadeController implements CidadeControllerOpenApi{
 	
 	@Autowired
 	private CidadeService cidadeService;
@@ -40,7 +38,7 @@ public class CidadeController {
 	public List<CidadeModel> listar(){
 		return cidadeAssembler.toCollectionModel(cidadeService.listar());
 	}
-	
+
 	@GetMapping("/{id}")
 	public CidadeModel buscar(@PathVariable Long id){
 		return cidadeAssembler.toModel(cidadeService.buscar(id));
@@ -62,7 +60,7 @@ public class CidadeController {
 		Cidade cidade = cidadeAssembler.toDomainObject(cidadeInput);
 		return cidadeAssembler.toModel(cidadeService.salvar(cidade));
 	}
-	
+
 	@PutMapping("/{id}")
 	public CidadeModel atualizar(@PathVariable Long id, @RequestBody @Valid CidadeInput cidadeInput){
 		Cidade cidadeAtual = cidadeService.buscar(id);
