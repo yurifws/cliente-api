@@ -4,8 +4,8 @@ import static io.restassured.RestAssured.basePath;
 import static io.restassured.RestAssured.enableLoggingOfRequestAndResponseIfValidationFails;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.port;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.Matchers.equalTo;
 
 import java.time.LocalDate;
 
@@ -30,16 +30,16 @@ import com.compasso.cliente.util.ResourceUtils;
 
 import io.restassured.http.ContentType;
 /**
- * Classe de Teste de API de Cidades
+ * Classe de Teste de API de Clientes
  * @author yurifws
  *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
-public class CidadeServiceIT {
+public class ClienteServiceIT {
 	
-	private static final int CIDADE_ID_INEXISTENTE = 100;
+	private static final int CLIENTE_ID_INEXISTENTE = 100;
 
 	@LocalServerPort
 	private int localServerPort;
@@ -48,28 +48,27 @@ public class CidadeServiceIT {
 	private DatabaseCleaner databaseCleaner;
 	
 	@Autowired
-	private CidadeRepository cidadeRepository;
+	private ClienteRepository clienteRepository;
 	
 	@Autowired
-	private ClienteRepository clienteRepository;
+	private CidadeRepository cidadeRepository;
 	
 	@Autowired
 	private EstadoRepository estadoRepository;
 	
-	private String jsonCorretoCidade;
+	private String jsonCorretoCliente;
+	private Cliente clienteJorge;
 	private Cidade cidadeNatal;
-	private Estado estadoPernambuco;
-	
-	private Cliente cliente;
+	private Estado estadoRioGrandeNorte;
 
 	@Before
 	public void setUp() {
 		enableLoggingOfRequestAndResponseIfValidationFails();
-		basePath = "/cidades";
+		basePath = "/clientes";
 		port = localServerPort;
 		
-		jsonCorretoCidade = ResourceUtils
-				.getContentFromResource("/json/correto/cidade-recife.json");
+		jsonCorretoCliente = ResourceUtils
+				.getContentFromResource("/json/correto/cliente-joao.json");
 		
 		databaseCleaner.clearTables();
 		preparaDados();
@@ -77,7 +76,7 @@ public class CidadeServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarStatus200_WhenConsultarCidades() {
+	public void shouldRetornarStatus200_WhenConsultarClientes() {
 		given()
 			.accept(ContentType.JSON)
 		.when()
@@ -87,76 +86,73 @@ public class CidadeServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarRespostaEStatus201_WhenCadastrarCidade() {
+	public void shouldRetornarRespostaEStatus201_WhenCadastrarCliente() {
 		given()
-			.body(jsonCorretoCidade)
+			.body(jsonCorretoCliente)
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
 			.post()
 		.then()
 			.statusCode(HttpStatus.CREATED.value())
-			.body("nome", equalTo("Recife"))
-			.body("estado.id", equalTo(1))
-			.body("estado.nome", equalTo("Pernambuco"));
+			.body("nome", equalTo("Joao Nunes da Silva"))
+			.body("sexo", equalTo("M"))
+			.body("dataNascimento", equalTo("1994-11-15"))
+			.body("idade", equalTo(23))
+			.body("cidade.id", equalTo(1));
 	}
 	
 	@Test
-	public void shouldRetornarRespostaEStatusCorretos_WhenConsultarCidadeExistente() {
+	public void shouldRetornarRespostaEStatusCorretos_WhenConsultarClienteExistente() {
 		given()
-			.pathParam("cidadeId", cidadeNatal.getId())
+			.pathParam("clienteId", clienteJorge.getId())
 			.accept(ContentType.JSON)
 		.when()
-			.get("/{cidadeId}")
+			.get("/{clienteId}")
 		.then()
 			.statusCode(HttpStatus.OK.value())
-			.body("nome", equalTo(cidadeNatal.getNome()))
-			.body("estado.nome", equalTo(cidadeNatal.getEstado().getNome()));
+			.body("nome", equalTo(clienteJorge.getNome()))
+			.body("sexo", equalTo(String.valueOf(clienteJorge.getSexo())))
+			//.body("dataNascimento", equalTo(clienteJorge.getDataNascimento()))
+			.body("idade", equalTo(clienteJorge.getIdade()))
+			.body("cidade.nome", equalTo(clienteJorge.getCidade().getNome()))
+			.body("cidade.estado.nome", equalTo(clienteJorge.getCidade().getEstado().getNome()));
 	}
 	
 	@Test
-	public void shouldRetornarRespostaEStatusCorretos_WhenConsultarCidadePorNomeExistente() {
+	public void shouldRetornarRespostaEStatusCorretos_WhenConsultarClientePorNomeExistente() {
 		given()
-			.queryParam("nome", cidadeNatal.getNome())
+			.queryParam("nome", clienteJorge.getNome())
 			.accept(ContentType.JSON)
 		.when()
 			.get("/por-nome")
 		.then()
 			.statusCode(HttpStatus.OK.value())
-			.body("nome", hasItem(cidadeNatal.getNome()))
-			.body("estado.nome", hasItem(cidadeNatal.getEstado().getNome()));
+			.body("nome", hasItem(clienteJorge.getNome()))
+			.body("sexo", hasItem(String.valueOf(clienteJorge.getSexo())))
+			//.body("dataNascimento", hasItem(clienteJorge.getDataNascimento()))
+			.body("idade", hasItem(clienteJorge.getIdade()))
+			.body("cidade.nome", hasItem(clienteJorge.getCidade().getNome()))
+			.body("cidade.estado.nome", hasItem(clienteJorge.getCidade().getEstado().getNome()));
 	}
 	
 	@Test
-	public void shouldRetornarRespostaEStatusCorretos_WhenConsultarCidadePorEstadoNomeExistente() {
+	public void shouldRetornarStatus404_WhenConsultarClienteInexistente() {
 		given()
-			.queryParam("nome", cidadeNatal.getEstado().getNome())
+			.pathParam("clienteId", CLIENTE_ID_INEXISTENTE)
 			.accept(ContentType.JSON)
 		.when()
-			.get("/por-estado")
-		.then()
-			.statusCode(HttpStatus.OK.value())
-			.body("nome", hasItem(cidadeNatal.getNome()))
-			.body("estado.nome", hasItem(cidadeNatal.getEstado().getNome()));
-	}
-	
-	@Test
-	public void shouldRetornarStatus404_WhenConsultarCidadeInexistente() {
-		given()
-			.pathParam("cidadeId", CIDADE_ID_INEXISTENTE)
-			.accept(ContentType.JSON)
-		.when()
-			.get("/{cidadeId}")
+			.get("/{clienteId}")
 		.then()
 			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 	
 	@Test
-	public void shouldRetornarStatus400_WhenCadastrarCidadeNomeNull() {
-		String jsonCidadeNomeNull = ResourceUtils
-				.getContentFromResource("/json/incorreto/cidade-nome-null.json");
+	public void shouldRetornarStatus400_WhenCadastrarClienteNomeNull() {
+		String jsonClienteNomeNull = ResourceUtils
+				.getContentFromResource("/json/incorreto/cliente-nome-null.json");
 		given()
-			.body(jsonCidadeNomeNull)
+			.body(jsonClienteNomeNull)
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
@@ -166,11 +162,11 @@ public class CidadeServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarStatus400_WhenCadastrarCidadeSemEstadoId() {
-		String jsonCidadeSemEstadoId = ResourceUtils
-				.getContentFromResource("/json/incorreto/cidade-recife-sem-codigo-estado.json");
+	public void shouldRetornarStatus400_WhenCadastrarClienteSemCidadeId() {
+		String jsonClienteSemCidadeId = ResourceUtils
+				.getContentFromResource("/json/incorreto/cliente-leonardo-sem-codigo-cidade.json");
 		given()
-			.body(jsonCidadeSemEstadoId)
+			.body(jsonClienteSemCidadeId)
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
@@ -180,36 +176,21 @@ public class CidadeServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarStatus400_WhenCadastrarCidadeSemEstado() {
-		String jsonCidadeSemEstado = ResourceUtils
-				.getContentFromResource("/json/incorreto/cidade-recife-sem-estado.json");
+	public void shouldRetornarStatus400_WhenCadastrarClienteSemCidade() {
+		String jsonClienteSemCidade = ResourceUtils
+				.getContentFromResource("/json/incorreto/cliente-leonardo-sem-cidade.json");
 		given()
-			.body(jsonCidadeSemEstado)
+			.body(jsonClienteSemCidade)
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
 			.post()
-		.then()
-			.statusCode(HttpStatus.BAD_REQUEST.value());
-	}
-	
-	@Test
-	public void shouldRetornarStatus400_WhenDeletarCidadeEmUso() {
-		given()
-			.pathParam("cidadeId", cidadeNatal.getId())
-			.accept(ContentType.JSON)
-		.when()
-			.delete("/{cidadeId}")
 		.then()
 			.statusCode(HttpStatus.BAD_REQUEST.value());
 	}
 	
 	private void preparaDados() {
-		estadoPernambuco = new Estado();
-		estadoPernambuco.setNome("Pernambuco");
-		estadoPernambuco = estadoRepository.save(estadoPernambuco);
-		
-		Estado estadoRioGrandeNorte = new Estado();
+		estadoRioGrandeNorte = new Estado();
 		estadoRioGrandeNorte.setNome("Rio Grande do Norte");
 		estadoRioGrandeNorte = estadoRepository.save(estadoRioGrandeNorte);
 		cidadeNatal = new Cidade();
@@ -217,13 +198,13 @@ public class CidadeServiceIT {
 		cidadeNatal.setEstado(estadoRioGrandeNorte);
 		cidadeNatal = cidadeRepository.save(cidadeNatal);
 		
-		cliente = new Cliente();
-		cliente.setNome("Rafael Júnior");
-		cliente.setSexo('M');
-		cliente.setDataNascimento(LocalDate.of(1994, 11, 21));
-		cliente.obterIdade();
-		cliente.setCidade(cidadeNatal);
-		clienteRepository.save(cliente);
+		clienteJorge = new Cliente();
+		clienteJorge.setNome("Jorge Fernandes Domingos");
+		clienteJorge.setSexo('M');
+		clienteJorge.setDataNascimento(LocalDate.of(1994, 01, 11));
+		clienteJorge.obterIdade();
+		clienteJorge.setCidade(cidadeNatal);
+		clienteRepository.save(clienteJorge);
 		
 	}
 
