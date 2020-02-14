@@ -1,1 +1,10 @@
 # cliente-api
+API Rest para gerenciar clientes utilizando Spring Boot Framework
+
+
+# Preparação de execução
+Será necessário instalar:
+  - Java 8 (https://www.oracle.com/java/technologies/javase-jdk8-downloads.html)
+  - STS 4 ou Eclipse (https://spring.io/tools)
+  - Project Lombok (https://projectlombok.org)
+
