@@ -14,26 +14,27 @@ import com.compasso.cliente.domain.model.Cliente;
 import com.compasso.cliente.domain.repository.ClienteRepository;
 
 @Service
-public class ClienteService {
+public class ClienteService extends ServiceGeneric<Cliente, ClienteRepository>{
 
+	private static final String MSG_CLIENTE_EM_USO = "Cliente de código %d náo pode ser removido, pois está em uso.";
+	
 	@Autowired
 	private ClienteRepository clienteRepository;
 
 	@Autowired
 	private CidadeService cidadeService;
 
-	public List<Cliente> listar() {
-		return clienteRepository.findAll();
-	}
-
+	@Override
 	public Cliente buscar(Long id) {
 		return clienteRepository.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException(id));
 	}
-
-	public List<Cliente> buscarPorNome(String nome) {
+	
+	@Override
+	public List<Cliente> buscarPorNome(String nome){
 		return clienteRepository.findByNomeContaining(nome);
 	}
 
+	@Override
 	@Transactional
 	public Cliente salvar(Cliente cliente) {
 		try {
@@ -47,10 +48,8 @@ public class ClienteService {
 		}
 	}
 
-	@Transactional
 	public void remover(Long id) {
-		clienteRepository.deleteById(id);
-		clienteRepository.flush();
+		remover(id, MSG_CLIENTE_EM_USO);
 	}
 
 }

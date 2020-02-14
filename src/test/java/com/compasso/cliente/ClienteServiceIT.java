@@ -104,6 +104,7 @@ public class ClienteServiceIT {
 	
 	@Test
 	public void shouldRetornarRespostaEStatusCorretos_WhenConsultarClienteExistente() {
+		clienteJorge.toString();
 		given()
 			.pathParam("clienteId", clienteJorge.getId())
 			.accept(ContentType.JSON)

@@ -2,9 +2,6 @@ package com.compasso.cliente.domain.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -13,15 +10,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "tb_cidade")
-public class Cidade {
-	
-	@EqualsAndHashCode.Include
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class Cidade extends BaseEntity{
 	
 	@Column(nullable = false)
 	private String nome;
