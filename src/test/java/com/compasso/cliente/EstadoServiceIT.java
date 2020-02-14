@@ -139,14 +139,14 @@ public class EstadoServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarStatus400_WhenDeletarEstadoEmUso() {
+	public void shouldRetornarStatus409_WhenDeletarEstadoEmUso() {
 		given()
 			.pathParam("estadoId", estadoSaoPaulo.getId())
 			.accept(ContentType.JSON)
 		.when()
 			.delete("/{estadoId}")
 		.then()
-			.statusCode(HttpStatus.BAD_REQUEST.value());
+			.statusCode(HttpStatus.CONFLICT.value());
 	}
 	
 	

@@ -24,6 +24,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.compasso.cliente.domain.exception.EntidadeEmUsoException;
 import com.compasso.cliente.domain.exception.EntidadeNaoEncontradaException;
 import com.compasso.cliente.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
@@ -180,6 +181,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ProblemType problemType = ProblemType.ERRO_NEGOCIO;
+		String detail = ex.getMessage();
+
+		Problem problem = createProblemBuilder(status, problemType, detail, detail).build();
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+
+	}
+	
+	@ExceptionHandler(EntidadeEmUsoException.class)
+	public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.CONFLICT;
+		ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
 		String detail = ex.getMessage();
 
 		Problem problem = createProblemBuilder(status, problemType, detail, detail).build();
