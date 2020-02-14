@@ -8,3 +8,5 @@ Será necessário instalar:
   - STS 4 ou Eclipse (https://spring.io/tools)
   - Project Lombok (https://projectlombok.org)
 
+# Para consultar a documentação da API
+http://localhost:8080/swagger-ui.html
