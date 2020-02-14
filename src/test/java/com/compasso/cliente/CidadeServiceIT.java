@@ -205,14 +205,14 @@ public class CidadeServiceIT {
 	}
 	
 	@Test
-	public void shouldRetornarStatus400_WhenDeletarCidadeEmUso() {
+	public void shouldRetornarStatus409_WhenDeletarCidadeEmUso() {
 		given()
 			.pathParam("cidadeId", cidadeNatal.getId())
 			.accept(ContentType.JSON)
 		.when()
 			.delete("/{cidadeId}")
 		.then()
-			.statusCode(HttpStatus.BAD_REQUEST.value());
+			.statusCode(HttpStatus.CONFLICT.value());
 	}
 	
 	private void preparaDados() {
