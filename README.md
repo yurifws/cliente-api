@@ -1,6 +1,17 @@
 # cliente-api
 API Rest para gerenciar clientes utilizando Spring Boot Framework
 
+- Endpoints REST para:
+
+Cadastrar cidade
+Cadastrar cliente
+Consultar cidade pelo nome
+Consultar cidade pelo estado
+Consultar cliente pelo nome
+Consultar cliente pelo Id
+Remover cliente
+Alterar o nome do cliente
+
 
 # Preparação de execução
 Será necessário instalar:
@@ -10,3 +21,6 @@ Será necessário instalar:
 
 # Para consultar a documentação da API
 http://localhost:8080/swagger-ui.html
+
+
+# Fluxo de git
