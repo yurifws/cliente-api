@@ -3,14 +3,14 @@ API Rest para gerenciar clientes utilizando Spring Boot Framework
 
 Endpoints REST para:
 
-Cadastrar cidade
-Cadastrar cliente
-Consultar cidade pelo nome
-Consultar cidade pelo estado
-Consultar cliente pelo nome
-Consultar cliente pelo Id
-Remover cliente
-Alterar o nome do cliente
+- Cadastrar cidade
+- Cadastrar cliente
+- Consultar cidade pelo nome
+- Consultar cidade pelo estado
+- Consultar cliente pelo nome
+- Consultar cliente pelo Id
+- Remover cliente
+- Alterar o nome do cliente
 
 
 # Preparação de execução
