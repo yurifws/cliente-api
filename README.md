@@ -1,7 +1,7 @@
 # cliente-api
 API Rest para gerenciar clientes utilizando Spring Boot Framework
 
-- Endpoints REST para:
+Endpoints REST para:
 
 Cadastrar cidade
 Cadastrar cliente
