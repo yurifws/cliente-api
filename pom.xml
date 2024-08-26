@@ -19,7 +19,7 @@
 	<properties>
 		<java.version>8</java.version>
 		<modelmapper.version>2.3.0</modelmapper.version>
-		<spring-fox.version>2.9.2</spring-fox.version>
+		<spring-fox.version>2.10.0</spring-fox.version>
 	</properties>
 
 	<dependencies>
